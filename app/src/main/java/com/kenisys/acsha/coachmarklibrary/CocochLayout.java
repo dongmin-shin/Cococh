@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 /**
  * Created by DongMinShin on 2017. 1. 15..
@@ -24,9 +25,9 @@ public class CocochLayout extends RelativeLayout {
 
     private Align align = Align.CENTER;
 
-    private ViewGroup coachBaseScrollView;
-    private View coachBaseView;
-    private View coachTextView;
+    private ViewGroup rootViewGroup;
+    private View targetView;
+    private View coachMarkView;
 
     public CocochLayout(Context context) {
         super(context);
@@ -54,7 +55,7 @@ public class CocochLayout extends RelativeLayout {
     }
 
     public void addCoachTextView(View coachTextView) {
-        this.coachTextView = coachTextView;
+        this.coachMarkView = coachTextView;
         addView(coachTextView);
     }
 
@@ -65,45 +66,50 @@ public class CocochLayout extends RelativeLayout {
             return;
         }
 
-        ViewGroup childScrollLayout = (ViewGroup) coachBaseScrollView.getChildAt(0);
+        ViewGroup attachTargetViewGroup = rootViewGroup;
+        if (rootViewGroup instanceof ScrollView) {
+            rootViewGroup = (ViewGroup) this.rootViewGroup.getChildAt(0);
+        }
 
         // Child ScrollLayout의 Class Instance Type을 알 수 없음으로 instanceof로 일단 체크하여 레이아웃의 크기를 변경해준다.
         // TODO. 다른 방법이 있는지 알아볼 필요가 있다.
-        if (childScrollLayout instanceof FrameLayout) {
-            setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, childScrollLayout.getHeight()));
-        } else if (childScrollLayout instanceof RelativeLayout) {
-            setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, childScrollLayout.getHeight()));
+        if (attachTargetViewGroup instanceof FrameLayout) {
+            setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, attachTargetViewGroup.getHeight()));
+        } else if (attachTargetViewGroup instanceof RelativeLayout) {
+            setLayoutParams(new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, attachTargetViewGroup.getHeight()));
         }
 
         float rearrangePosX;
         float rearrangePosY;
 
         if (align == Align.LEFT) {
-            rearrangePosX = coachBaseView.getX();
-            rearrangePosY = coachBaseView.getY() - coachTextView.getHeight();
+            rearrangePosX = targetView.getX();
+            rearrangePosY = targetView.getY() - coachMarkView.getHeight();
 
         } else if (align == Align.CENTER) {
-            rearrangePosX = coachBaseView.getX() - ((coachTextView.getWidth() / 2) - (coachBaseView.getWidth() / 2));
-            rearrangePosY = coachBaseView.getY() - coachTextView.getHeight();
+            rearrangePosX = targetView.getX() - ((coachMarkView.getWidth() / 2) - (targetView.getWidth() / 2));
+            rearrangePosY = targetView.getY() - coachMarkView.getHeight();
 
         } else {
-            rearrangePosX = coachBaseView.getX() - coachTextView.getWidth() + coachBaseView.getWidth();
-            rearrangePosY = coachBaseView.getY() - coachTextView.getHeight();
+            rearrangePosX = targetView.getX() - coachMarkView.getWidth() + targetView.getWidth();
+            rearrangePosY = targetView.getY() - coachMarkView.getHeight();
 
         }
 
-        coachTextView.setX(rearrangePosX);
-        coachTextView.setY(rearrangePosY);
+        Log.d("TEST", "rearrangePosX: " + rearrangePosX + ", rearrangePosY: " + rearrangePosY);
 
-        Log.d("TEST", "[onLayout] coachBaseView: " + coachBaseView.getX() + ", " + coachBaseView.getY() + ", coachTextView: " + coachTextView);
+        coachMarkView.setX(rearrangePosX);
+        coachMarkView.setY(rearrangePosY);
+
+        Log.d("TEST", "[onLayout] targetView: " + targetView.getX() + ", " + targetView.getY() + ", coachMarkView: " + coachMarkView);
     }
 
     public void setRootViewGroup(ViewGroup coachBaseScrollView) {
-        this.coachBaseScrollView = coachBaseScrollView;
+        this.rootViewGroup = coachBaseScrollView;
     }
 
     public void setTargetView(View targetView) {
-        this.coachBaseView = targetView;
+        this.targetView = targetView;
     }
 
     public void setAlign(Align align) {

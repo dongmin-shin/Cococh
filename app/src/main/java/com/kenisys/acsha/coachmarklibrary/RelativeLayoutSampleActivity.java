@@ -7,17 +7,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class RelativeLayoutSampleActivity extends AppCompatActivity {
 
     private View targetView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.relative_layout_sample);
 
         targetView = findViewById(R.id.target_view);
 
+        // 정상 동작
         Cococh cococh = new Cococh(this);
         cococh.setRootViewGroup(getRootViewGroup());
         cococh.setTargetView(targetView);
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private ViewGroup getRootViewGroup() {
-        final ViewGroup viewGroup = (ViewGroup) findViewById(android.R.id.content);
+        final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this.findViewById(android.R.id.content)).getChildAt(0);
         return viewGroup;
     }
 

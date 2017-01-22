@@ -5,21 +5,25 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+public class ScrollViewSampleActivity extends AppCompatActivity {
 
+    private ScrollView rootViewGroup;
     private View targetView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.scroll_view_sample);
 
+        rootViewGroup = (ScrollView) findViewById(R.id.root_view);
         targetView = findViewById(R.id.target_view);
 
+        // 정상 동작
         Cococh cococh = new Cococh(this);
-        cococh.setRootViewGroup(getRootViewGroup());
+        cococh.setRootViewGroup(rootViewGroup);
         cococh.setTargetView(targetView);
         cococh.setCoachMarkView(getCoachTextView());
         cococh.setAlign(CocochLayout.Align.CENTER);
@@ -28,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         cococh.show();
     }
 
-    private View getCoachTextView() {
+    public View getCoachTextView() {
         TextView coachMarkView = new TextView(this);
         coachMarkView.setText("Hello? This is Cococh library sample");
         coachMarkView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -40,11 +44,5 @@ public class MainActivity extends AppCompatActivity {
 
         return coachMarkView;
     }
-
-    private ViewGroup getRootViewGroup() {
-        final ViewGroup viewGroup = (ViewGroup) findViewById(android.R.id.content);
-        return viewGroup;
-    }
-
 
 }
